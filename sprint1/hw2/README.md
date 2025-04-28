@@ -6,7 +6,8 @@
 - 2x одиночных потребителя
 - 2x batch-потребителя
 ```bash
-➜ cd sprint1/hw2
+➜ git clone git@github.com:mushishiva/kafka.git
+➜ cd kafka/sprint1/hw2
 ➜ docker-compose up --build producer single_consumer batch_consumer
 ```
 
