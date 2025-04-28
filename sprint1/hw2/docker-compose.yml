@@ -1,0 +1,146 @@
+services:
+  kafka-0:
+    image: bitnami/kafka:3.4
+    ports:
+      - "9094:9094"
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=0
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-0:9092,EXTERNAL://127.0.0.1:9094
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_SCHEMA_REGISTRY_URL=schema-registry:8081
+    volumes:
+      - kafka_0_data:/bitnami/kafka
+   
+   
+  kafka-1:
+    image: bitnami/kafka:3.4
+    ports:
+      - "9095:9095"
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=1
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9092,EXTERNAL://127.0.0.1:9095
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_SCHEMA_REGISTRY_URL=schema-registry:8081
+    volumes:
+      - kafka_1_data:/bitnami/kafka
+   
+  kafka-2:
+    image: bitnami/kafka:3.4
+    ports:
+      - "9096:9096"
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CFG_NODE_ID=2
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=0@kafka-0:9093,1@kafka-1:9093,2@kafka-2:9093
+      - KAFKA_KRAFT_CLUSTER_ID=abcdefghijklmnopqrstuv
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9096
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9092,EXTERNAL://127.0.0.1:9096
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_SCHEMA_REGISTRY_URL=schema-registry:8081
+    volumes:
+      - kafka_2_data:/bitnami/kafka   
+
+  ui:
+    image: provectuslabs/kafka-ui:v0.7.0
+    restart: always
+    depends_on:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      KAFKA_CLUSTERS_0_NAME: kraft
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    restart: always
+    depends_on:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  producer:
+    image: kafka-py
+    build:
+      context: ../../.
+    working_dir: /app/sprint1/hw2/src
+    command: python producer.py
+    volumes:
+      - ./src:/app/sprint1/hw2/src
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      KAFKA_TOPIC: $MY_TOPIC
+      PYTHONUNBUFFERED: 1
+      SCHEMA_REGISTRY_ENDPOINT: $SCHEMA_REGISTRY_ENDPOINT
+    depends_on:
+      - kafka-0
+      - kafka-1
+      - kafka-2
+      - schema-registry
+      - ui
+
+  single_consumer:
+    image: kafka-py
+    deploy:
+      replicas: 2
+    build:
+      context: ../../.
+    working_dir: /app/sprint1/hw2/src
+    command: python single_consumer.py
+    volumes:
+      - ./src:/app/sprint1/hw2/src
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      KAFKA_TOPIC: $MY_TOPIC
+      PYTHONUNBUFFERED: 1
+      SCHEMA_REGISTRY_ENDPOINT: $SCHEMA_REGISTRY_ENDPOINT
+    depends_on:
+      - producer
+
+  batch_consumer:
+    image: kafka-py
+    deploy:
+      replicas: 2
+    build:
+      context: ../../.
+    working_dir: /app/sprint1/hw2/src
+    command: python batch_consumer.py
+    volumes:
+      - ./src:/app/sprint1/hw2/src
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: $KAFKA_BOOTSTRAP_SERVERS
+      KAFKA_TOPIC: $MY_TOPIC
+      PYTHONUNBUFFERED: 1
+      SCHEMA_REGISTRY_ENDPOINT: $SCHEMA_REGISTRY_ENDPOINT
+    depends_on:
+      - producer
+
+volumes:
+  kafka_0_data: ~
+  kafka_1_data: ~
+  kafka_2_data: ~
