@@ -56,7 +56,7 @@ Topic: my-topic	TopicId: xeS8gEz4RwOx_f0HH1GDUQ	PartitionCount: 3	ReplicationFac
 - каждый консьюмер запущен в двух экземплярах
 - есть сериализация и десериализация сообщений
 
-![Logs](./data/img1.png?raw=true "Logs" =600x)
+<img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw2/data/img1.png" width="600" />
 
 Схема записана в registry [http://localhost:8081/schemas](http://localhost:8081/schemas)
 
