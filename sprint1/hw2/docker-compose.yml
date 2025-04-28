@@ -86,6 +86,7 @@ services:
 
   producer:
     image: kafka-py
+    restart: always
     build:
       context: ../../.
     working_dir: /app/sprint1/hw2/src
@@ -106,6 +107,7 @@ services:
 
   single_consumer:
     image: kafka-py
+    restart: always
     deploy:
       replicas: 2
     build:
@@ -124,6 +126,7 @@ services:
 
   batch_consumer:
     image: kafka-py
+    restart: always
     deploy:
       replicas: 2
     build:

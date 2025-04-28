@@ -6,7 +6,8 @@
 - 2x одиночных потребителя
 - 2x batch-потребителя
 ```bash
-➜ docker-compose up producer single_consumer batch_consumer
+➜ cd sprint1/hw2
+➜ docker-compose up --build producer single_consumer batch_consumer
 ```
 
 Проверяем что все контейнеры запущены (10шт)
