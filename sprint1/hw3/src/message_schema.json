@@ -1,0 +1,10 @@
+{
+    "type": "record",
+    "name": "Message",
+    "fields": [
+      {"name": "from_user", "type": "int"},
+      {"name": "to_user", "type": "int"},
+      {"name": "message", "type": ["string"], "default": ""}
+    ]
+  }
+  
