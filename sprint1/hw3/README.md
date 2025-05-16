@@ -26,7 +26,6 @@ d6166b64f088   confluentinc/ksqldb-server:latest        "/usr/bin/docker/run"   
 ```
 
 ### Запускаем имитацию пользователей
-Создаем тему с 3 разделами и 2 репликами
 ```bash
 ➜ docker-compose run kafka_py python -m user
 [DEBUG]: Запуск тестовых пользователей
