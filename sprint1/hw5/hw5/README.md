@@ -233,5 +233,5 @@ FROM
 <img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw5/hw5/data/m1.png"/>
 
 ### Попробовал поменять запрос и еще раз запустил генерацию в БД и графики отобразились
-<img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw5/hw5/data/с1.png"/>
-<img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw5/hw5/data/g1.png"/>
+<img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw5/hw5/data/c1.png"/>
+<img src="https://github.com/mushishiva/kafka/blob/master/sprint1/hw5/hw5/data/g3.png"/>
