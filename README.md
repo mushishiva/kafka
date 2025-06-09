@@ -1,3 +1,4 @@
 - Спринт 1
   - [Практическая работа 2](https://github.com/mushishiva/kafka/tree/master/sprint1/hw2)
   - [Практическая работа 3](https://github.com/mushishiva/kafka/tree/master/sprint1/hw3)
+  - [Практическая работа 5](https://github.com/mushishiva/kafka/tree/master/sprint1/hw5/hw5)
